@@ -1,0 +1,103 @@
+
+
+
+// SENSORS
+// GAMES IS ON?
+int gameRun = 23; // lid sensor
+
+//sensors SCORE -------------------------
+int points_20 = 24;
+int points2_20 = 25;
+int points_30 = 26;
+int points_90 = 27;
+int points_50 = 28;
+int points_80 = 29;
+int points_10 = 30;
+int points2_10 = 31;
+
+// ends sensor
+int endGame = 32;
+
+//multiball sensor
+int multiballSensor = 33;
+
+// ACTION OUTPUTS-------------------------
+//flips
+int flipRight = 33;
+int flipLeft = 34;
+
+//TAKE OUT
+int takeOut = 35;
+// 
+int multiball = 36;
+int blackHole = 37;
+// Score Leds
+int points_20L = 38;
+int points2_20L = 39;
+int points_30L = 40;
+int points_90L = 41;
+int points_50L = 42;
+int points_80L = 43;
+int points_10L = 44;
+int points2_10L = 45;
+
+int buzzer = 46;
+
+//---- Display ----
+byte SCLK = 7;
+byte RCLK = 6;
+byte DIO = 5;
+//-----------------
+
+//##-----------------------------------
+#include <TM74HC595Display.h>
+#include <TimerOne.h>
+TM74HC595Display disp(SCLK, RCLK, DIO);
+unsigned char SYM[39];
+
+//--------------------------------------
+
+
+// Functions
+void mainAnimation();
+void gameRunning();
+void playBuzzer(int times = 1);
+// *******
+
+
+void setup() {
+  ///########
+  Timer1.initialize(1500);           
+  Timer1.attachInterrupt(timerIsr);  
+  ///########
+
+  Serial.begin(9600);
+  Serial.println("Working..");
+  
+//INPUTS SENSORS
+  for (int i = 22; i <= 32; i++){
+    pinMode(i, INPUT);
+  }
+//OUTPUTS
+  for (int i = 33; i <= 53; i++){
+    pinMode(i, OUTPUT);
+  }
+  playBuzzer();
+
+ 
+}
+
+
+void loop() {
+
+  mainAnimation();
+
+  if (digitalRead(gameRun)){
+    gameRunning();
+  }
+
+}
+
+void timerIsr() {   // прерывание таймера
+  disp.timerIsr();  // пнуть дисплей
+}
